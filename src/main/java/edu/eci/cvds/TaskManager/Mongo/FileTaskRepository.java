@@ -25,12 +25,57 @@ public class FileTaskRepository implements TaskRepository {
 
     @Override
     public void completeTask(String taskId) {
-        // Implementación para marcar una tarea como completada en el archivo de texto
+         // Leer todas las tareas del archivo
+         List<String> tasks = new ArrayList<>();
+         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+             String line;
+             while ((line = reader.readLine()) != null) {
+                 String[] taskData = line.split(",");
+                 if (taskData[0].equals(taskId)) {
+                     // Marcar la tarea como completada cambiando el valor de "completed" a "true"
+                     taskData[2] = "true";
+                 }
+                 tasks.add(String.join(",", taskData)); // Reconstruir la línea y añadirla a la lista
+             }
+         } catch (IOException e) {
+             e.printStackTrace();
+         }
+ 
+         // Escribir de nuevo todas las tareas en el archivo
+         try (FileWriter writer = new FileWriter(filePath, false)) { // Sobrescribir el archivo
+             for (String task : tasks) {
+                 writer.write(task + "\n");
+             }
+         } catch (IOException e) {
+             e.printStackTrace();
+         }
     }
 
     @Override
     public void deleteTask(String taskId) {
-        // Implementación para eliminar una tarea del archivo de texto
+        // Leer todas las tareas del archivo
+        List<String> tasks = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] taskData = line.split(",");
+                if (!taskData[0].equals(taskId)) {
+                    // Solo agregar a la lista las tareas que no tengan el ID a eliminar
+                    tasks.add(line);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Escribir de nuevo todas las tareas en el archivo (excepto la eliminada)
+        try (FileWriter writer = new FileWriter(filePath, false)) { // Sobrescribir el archivo
+            for (String task : tasks) {
+                writer.write(task + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -50,6 +95,7 @@ public class FileTaskRepository implements TaskRepository {
     private Task parseTask(String line) {
         // Convierte una línea del archivo en un objeto Task
         return new Task(); // Proporciona una implementación real de esto
+    
     }
 
 }
