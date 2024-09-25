@@ -14,7 +14,7 @@ public class MongoTaskRepository implements TaskRepository {
 
     @Override
     public void addTask(Task task) {
-        mongoTemplate.save(task); // Guarda el objeto Task en la colección correspondiente
+        mongoTemplate.save(task); // Guarda el objeto Task en colección
     }
 
     @Override
@@ -41,7 +41,7 @@ public class MongoTaskRepository implements TaskRepository {
 
     @Override
     public List<Task> getAllTasks() {
-        return mongoTemplate.findAll(Task.class); // Devuelve todas las tareas de la colección
+        return mongoTemplate.findAll(Task.class); // Devuelve todas Tareas
     }
 }
 
