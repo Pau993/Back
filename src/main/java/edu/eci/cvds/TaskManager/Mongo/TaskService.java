@@ -5,8 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import io.vertx.core.impl.btc.BlockedThreadChecker.Task;
-
 @Service
 public class TaskService {
 
@@ -29,7 +27,7 @@ public class TaskService {
         taskRepository.deleteTask(taskId);
     }
 
-    public List<org.springframework.data.mongodb.core.messaging.Task> getAllTasks() {
+    public List<Task> getAllTasks() {
         return taskRepository.getAllTasks();
     }
 }

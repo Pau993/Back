@@ -1,33 +1,47 @@
 package edu.eci.cvds.TaskManager.Mongo;
 
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class MongoTaskRepository implements TaskRepository {
 
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
     @Override
     public void addTask(Task task) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addTask'");
+        mongoTemplate.save(task); // Guarda el objeto Task en la colección correspondiente
     }
 
     @Override
     public void completeTask(String taskId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'completeTask'");
+        // Buscar la tarea por ID
+        Task task = mongoTemplate.findById(taskId, Task.class);
+        if (task != null) {
+            task.setCompleted(true); // Marcar la tarea como completada
+            mongoTemplate.save(task); // Actualizar la tarea en la base de datos
+        } else {
+            throw new RuntimeException("Task not found with ID: " + taskId);
+        }
     }
 
     @Override
     public void deleteTask(String taskId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteTask'");
+        Task task = mongoTemplate.findById(taskId, Task.class);
+        if (task != null) {
+            mongoTemplate.remove(task); // Eliminar la tarea de la colección
+        } else {
+            throw new RuntimeException("Task not found with ID: " + taskId);
+        }
     }
 
     @Override
     public List<Task> getAllTasks() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllTasks'");
+        return mongoTemplate.findAll(Task.class); // Devuelve todas las tareas de la colección
     }
-
 }
+
